@@ -23,13 +23,11 @@ Click the button below, or manually add this repo URL to Morphe Manager:
 ## 🩹 Patches
 
 <!-- PATCHES_START -->
+> **[v1.0.0-dev.1](https://github.com/mridwanfirdaus2603/whatsapp/releases/tag/v1.0.0-dev.1)**&nbsp;&nbsp;&middot;&nbsp;&nbsp;`dev`&nbsp;&nbsp;&middot;&nbsp;&nbsp;**3 patches** across **1 app**&nbsp;&nbsp;&middot;&nbsp;&nbsp;[Full details](PATCHES.md)
 
-| Patch | Description |
-|---|---|
-| **Promotional UI Cleanup** | Reduces supported promotional and advertising-related interface elements. |
-| **Meta AI UI Cleanup** | Hides supported Meta AI-related interface entry points. |
-| **Patch Settings** | Adds a native Patch Settings menu into WhatsApp Settings. |
-
+| # | App | Patches | Version | Package |
+|---|---|---|---|---|
+| 1 | [**WhatsApp**](PATCHES.md#whatsapp-comwhatsapp) | 3 | `2.26.46.76` | [`com.whatsapp`](https://play.google.com/store/apps/details?id=com.whatsapp) |
 <!-- PATCHES_END -->
 
 ## 📱 Supported WhatsApp Versions
