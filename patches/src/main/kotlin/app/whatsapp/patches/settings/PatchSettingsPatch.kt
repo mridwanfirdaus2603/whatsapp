@@ -2,7 +2,6 @@ package app.whatsapp.patches.settings
 
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.patch.patch
-import app.morphe.patcher.util.findFreeRegister
 import app.morphe.patcher.util.getFreeRegisterProvider
 import app.whatsapp.patches.shared.Constants.WHATSAPP_COMPATIBILITY
 
@@ -52,8 +51,8 @@ val patchSettingsPatch = patch(
             // This adds the "Pengaturan Patch" preference entry to the preference screen.
             val insertIndex = settingsMethod.implementation!!.instructions.size - 1
 
-            val registerProvider = getFreeRegisterProvider(insertIndex, 1)
-            val freeRegister = registerProvider.getFreeRegister()
+            val registerProvider = settingsMethod.getFreeRegisterProvider(insertIndex, 1)
+            val freeRegister = registerProvider.getFreeRegister4Bit()
 
             settingsMethod.addInstructions(
                 insertIndex,

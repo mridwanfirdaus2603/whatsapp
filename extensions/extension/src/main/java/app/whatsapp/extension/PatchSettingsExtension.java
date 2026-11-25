@@ -48,13 +48,20 @@ public class PatchSettingsExtension {
      */
     public static void addPatchSettings(Object fragment, Object preferenceScreen) {
         try {
-            Context context = ((android.app.Fragment) fragment).getActivity();
+            Context context = null;
+            if (fragment instanceof android.app.Fragment) {
+                context = ((android.app.Fragment) fragment).getActivity();
+            }
             if (context == null) {
-                // Try as AndroidX fragment
                 try {
-                    context = ((androidx.fragment.app.Fragment) fragment).getContext();
+                    context = (Context) fragment.getClass().getMethod("getContext").invoke(fragment);
                 } catch (Throwable ignored) {
-                    return;
+                }
+            }
+            if (context == null) {
+                try {
+                    context = (Context) fragment.getClass().getMethod("getActivity").invoke(fragment);
+                } catch (Throwable ignored) {
                 }
             }
             if (context == null) return;

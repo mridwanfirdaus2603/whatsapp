@@ -1,11 +1,8 @@
 package app.whatsapp.patches.settings
 
 import app.morphe.patcher.Fingerprint
-import app.morphe.patcher.string
 import app.morphe.patcher.methodCall
-import app.morphe.patcher.resourceLiteral
-import com.android.tools.smali.dexlib2.AccessFlags
-import app.morphe.patcher.patch.ResourceType
+import app.morphe.patcher.string
 
 /**
  * Fingerprints for locating WhatsApp's Settings infrastructure.
