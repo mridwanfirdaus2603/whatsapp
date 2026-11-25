@@ -1,105 +1,106 @@
-# 👋🧩 Morphe Patches template
+# 🧩 WhatsApp Clean Experience Patches
 
-Template repository for Morphe Patches.
+Enhanced WhatsApp experience through Morphe patches.
+
+> **Independent community project.** Not affiliated with WhatsApp, Meta, or Morphe.
 
 ## ❓ About
 
-Patches for apps I like.
+WhatsApp Clean Experience provides patches for WhatsApp that:
 
-<!-- TODO: Update this about section with a brief introduction/summary about this repo and what it offers. -->
+- **Promotional UI Cleanup** — Reduces supported promotional and advertising-related interface elements.
+- **Meta AI UI Cleanup** — Hides supported Meta AI-related interface entry points.
+- **Patch Settings** — Adds a native "Pengaturan Patch" menu into WhatsApp Settings.
 
 ### How to use these patches
 
-Click the button below, or manually add this repo url to Morphe Manager: https://github.com/xyz-user/xyz-patches
+Click the button below, or manually add this repo URL to Morphe Manager:
 
-<a href="https://morphe.software/add-source?github=xyz-user/xyz-patches">
+<a href="https://morphe.software/add-source?github=mridwanfirdaus2603/whatsapp">
   <img src=".github/assets/add-to-morphe.svg" alt="Add to Morphe" height="48">
 </a>
 
-## 🩹 Patches list
+## 🩹 Patches
 
 <!-- PATCHES_START -->
 
-<!-- Do not modify this section by hand. The patch list is generated when release.yml creates a new release.
-     
-     This section shows one row for each app. The details of each patch are in PATCHES.md,
-     which is generated at the same time.
+| Patch | Description |
+|---|---|
+| **Promotional UI Cleanup** | Reduces supported promotional and advertising-related interface elements. |
+| **Meta AI UI Cleanup** | Hides supported Meta AI-related interface entry points. |
+| **Patch Settings** | Adds a native Patch Settings menu into WhatsApp Settings. |
 
-     If you wish to manually keep this list updated then remove the PATCHES_START and PATCHES_END 
-     comment blocks entirely. -->
-
-#### A list of your patches will automatically be shown here after your first patches release is created.
-
-&nbsp;
-
-## 🚀 Getting development started
-
-To start using this template, follow these steps:
-
-1. [Setup](https://github.com/MorpheApp/morphe-documentation/blob/main/docs/morphe-development/README.md) your development environment including adding a GitHub PAT as described [here](https://github.com/MorpheApp/morphe-patcher/blob/main/docs/2_1_setup.md#-prepare-the-environment).
-2. [Create a new repository using this template](https://github.com/new?template_name=morphe-patches-template&template_owner=MorpheApp). Select create a new repository, and **enable 'Include all branches'** 
-3. Enable "Allow GitHub Actions to create and approve pull requests" in your repo Settings > Actions > General > Workflow permissions
-4. Update the [build.gradle.kts](patches/build.gradle.kts) file (Specifically, the 
-   [group of the project](patches/build.gradle.kts#L1), and the [About](patches/build.gradle.kts#L6-L11))
-5. Update the [README.md](README.md) file to be specific of your repo, and update the links in the [issue templates](.github/ISSUE_TEMPLATE).
-6. Choose a name for your patches project. Keep in mind you must use a name that does not 
-   imply authorship by the Morphe open source project. If unsure, then simply name these
-   patches after yourself ("UserXYZ Morphe patches"). See the [NOTICE](NOTICE) for details. 
-7. (Optional): Add `patches-bundle.png` to the project if you want a custom icon to show in
-   Morphe Manager instead of your GitHub profile avatar.
-8. (Optional): Set `INCLUDE_APP_ICONS = True` in [generate_patches_readme.py](.github/scripts/generate_patches_readme.py) to show app icons in the generated patches list.
-9. (Optional): Sign your releases, so Morphe Manager refuses a release that was changed or swapped after you published it:
-   1. Run `./gradlew generateSigningKey`. It creates `morphe-signing.pub` and `morphe-signing.key`.
-   2. Commit `morphe-signing.pub`. Never commit `morphe-signing.key`, it is already ignored by git.
-   3. Add the content of `morphe-signing.key` as the `MORPHE_SIGNING_KEY` secret in your repo
-      Settings > Secrets and variables > Actions, then keep a backup of it somewhere safe and delete the file.
-
-   Every release is signed from then on. If you lose the key or it leaks, create a new one the same way;
-   users then have to confirm the new key in Morphe Manager before they get your next release.
-
-🎉 You are now ready to start creating patches!
-
-## 🧑‍💻 Dev usage
-
-To develop and release your Patches using this template:
-
-- **Make all changes to the `dev` branch.**
-- For local development work build your patches using the gradle task `./gradlew buildAndroid` to generate the mpp file found in `patches/build/libs/patches-*.mpp`. Apply your patches locally using Morphe Desktop tool like any other patch bundle.
-- Always use [Semantic commit](https://kapeli.com/cheat_sheets/Semantic_Commits.docset/Contents/Resources/Documents/index) messages for commits. To keep it simple use only 3 commit message types: 
-  - `feat: Added a new feature`
-  - `fix: Some problem now fixed`
-  - `chore: Random change you do not want in the user facing changelog`
-- Commits of `fix:` and `feat:` will automatically generate new pre-releases and `chore:` will not create a new release.
-- Users can apply your dev branch releases by enabling `pre-release` in Morphe Manager patch sources.
-- When your dev branch is ready, and you want a stable release, merge dev branch to main (do not squash, and only merge).
-- **Always use semantic release (release.yml)**. Do not manually upload or create releases by hand
-  because many files must be updated and release.yml handles everything.
-
-## 🤓 Tips
-- See the [patcher documentation](https://github.com/MorpheApp/morphe-patcher/blob/main/docs/1_patcher_intro.md) for more examples of creating patches and fingerprints.
-- Do not use AI to create new release scripts. The `release.yml` here already handles everything.
-  If you need something custom with your releases then modify the existing `release.yml`
-  and `.releaserc` instead of writing everything new from scratch.
-- Do not manually edit or manually commit any generated files such as: `patches-list.json`,
-  `patches-bundle.json`, `PATCHES.md`, `CHANGELOG.md`.  These files will be automatically updated by `release.yml`.
-- Do not force push any semantic release commits as that will break all future releases.
-  If you need to fix a broken release, it's always easiest to create a new release instead of 
-  fixing an existing release.
-
-
-<!-- The patches end tag is intentionally placed here so the first release will clean up 
-     this readme of all developer instructions above. -->
 <!-- PATCHES_END -->
 
-### 🛠️ Building locally
+## 📱 Supported WhatsApp Versions
 
-- Run `./gradlew buildAndroid`
-- The built patches .mpp file is found in `patches/build/libs/patches-*.mpp`
-- Patch the mpp file using [Morphe-Desktop](https://github.com/MorpheApp/morphe-desktop)
-  like any other patch bundle.
+| Version | Status |
+|---|---|
+| **2.26.46.76** | ✅ Target version (APKM) |
+| Other versions | ⚠️ Experimental — may work but untested |
 
-See the [Morphe documentation](https://github.com/MorpheApp/morphe-documentation) for more information.
+## 📦 Installation
+
+1. Install [Morphe Manager](https://morphe.software).
+2. Add this patch source to Morphe Manager (use the button above or add manually).
+3. Download WhatsApp **2.26.46.76** APKM from APKMirror.
+4. Select patches to apply in Morphe Manager.
+5. Patch and install.
+
+## ⚙️ Configuration
+
+Patch options are configured in **Morphe Manager** before patching:
+
+| Option | Default | Description |
+|---|---|---|
+| Hide promotional elements | ✅ Enabled | Reduces promotional/advertising UI elements |
+| Hide Meta AI | ✅ Enabled | Hides Meta AI interface entry points |
+| Patch Settings | ✅ Enabled | Adds "Pengaturan Patch" to WhatsApp Settings |
+
+> **Note:** Configuration changes require repatching through Morphe Manager. 
+> Runtime toggle switches are not supported by the Morphe patch architecture.
+
+## 🔧 Patch Settings Menu
+
+When the Patch Settings patch is applied, a new "**Pengaturan Patch**" entry appears 
+in WhatsApp's Settings screen. This menu shows:
+
+- **Pembersihan Iklan** — Current promotional cleanup status.
+- **Meta AI** — Current Meta AI cleanup status.
+- **Informasi Patch** — Patch version, WhatsApp version, compatibility status.
+
+The settings display is informational and shows the current compiled configuration.
+
+## ⚠️ Known Limitations
+
+- **Compile-time configuration only.** Settings cannot be toggled at runtime. Changes require repatching.
+- **Fingerprint-based detection.** Patches rely on fingerprinting methods by string constants and resource IDs. Untested WhatsApp versions may not match.
+- **No complete ad removal guarantee.** Only identifiable promotional elements are targeted.
+- **UI hiding only for Meta AI.** Backend services and infrastructure are not modified.
+- **NOT RUNTIME VERIFIED** unless explicitly tested on a device with the target WhatsApp version.
+
+## 🛠️ Building
+
+### Remote (Recommended)
+
+Push changes to the `dev` branch. GitHub Actions will automatically build and generate the `.mpp` artifact.
+
+### Locally
+
+```bash
+./gradlew buildAndroid
+```
+
+The built patches `.mpp` file is found in `patches/build/libs/patches-*.mpp`.
+
+## 🔒 Disclaimer
+
+- This is an **independent community project**.
+- Not affiliated with WhatsApp, Meta, Morphe, or any other entity.
+- Does not claim to remove all advertisements or disable Meta AI services.
+- Use at your own risk.
+- Modifying WhatsApp may violate its Terms of Service.
 
 ## 📜 License
 
-UserXYZ Patches are licensed under the [GNU General Public License v3.0](LICENSE)
+WhatsApp Clean Experience Patches are licensed under the [GNU General Public License v3.0](LICENSE).

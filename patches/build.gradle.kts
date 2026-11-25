@@ -10,17 +10,16 @@ plugins {
     alias(libs.plugins.animalsniffer)
 }
 
-group = "app.template"
+group = "app.whatsapp"
 
 patches {
-    // TODO: Update this section with your project details.
     about {
-        name = "UserXYZ Patches"
-        description = "Patches for apps I like"
-        source = "git@github.com:UserXYZ/morphe-patches.git"
-        author = "Awesome dev"
-        contact = "na"
-        website = "na"
+        name = "WhatsApp Clean Experience Patches"
+        description = "Enhanced WhatsApp experience — reduces promotional UI, hides Meta AI entry points, and adds native Patch Settings. Independent community project, not affiliated with WhatsApp, Meta, or Morphe."
+        source = "https://github.com/mridwanfirdaus2603/whatsapp.git"
+        author = "mridwanfirdaus2603"
+        contact = "https://github.com/mridwanfirdaus2603"
+        website = "https://github.com/mridwanfirdaus2603/whatsapp"
         license = "GPLv3"
     }
 }
