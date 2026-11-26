@@ -1,52 +1,28 @@
 package app.whatsapp.patches.metaai
 
 import app.morphe.patcher.Fingerprint
-import app.morphe.patcher.string
-import com.android.tools.smali.dexlib2.AccessFlags
 
 /**
- * Fingerprints for identifying Meta AI interface entry points in WhatsApp.
- *
- * These fingerprints use string-based matching to locate methods responsible
- * for displaying Meta AI UI elements such as navigation buttons, search bar
- * integrations, and promotional Meta AI components.
- *
- * Only verified, identifiable UI elements are targeted.
- * Normal WhatsApp search functionality is preserved.
+ * Fingerprints for Meta AI UI cleanup in WhatsApp.
  */
 
 /**
- * Matches the method that sets up the Meta AI button/entry point
- * in the WhatsApp navigation or toolbar area.
+ * Matches HomeActivity.onResume() to hide presentation-layer Meta AI entry points
+ * (such as the Meta AI FAB and search bar placeholder) while preserving normal search.
  */
-object MetaAIButtonFingerprint : Fingerprint(
+object HomeActivityOnResumeFingerprint : Fingerprint(
+    definingClass = "/HomeActivity;",
+    name = "onResume",
     returnType = "V",
-    isStatic = false,
-    filters = listOf(
-        string("meta_ai"),
-    )
+    parameters = emptyList(),
 )
 
 /**
- * Matches the method that creates or inflates Meta AI-related
- * shortcut components in the chat interface.
+ * Fallback matching HomeActivity.onCreate(Bundle) if onResume is inherited.
  */
-object MetaAIShortcutFingerprint : Fingerprint(
+object HomeActivityOnCreateFingerprint : Fingerprint(
+    definingClass = "/HomeActivity;",
+    name = "onCreate",
     returnType = "V",
-    isStatic = false,
-    filters = listOf(
-        string("ai_chat"),
-    )
-)
-
-/**
- * Matches methods that display Meta AI promotional elements
- * or suggestions within the app interface.
- */
-object MetaAIPromotionFingerprint : Fingerprint(
-    returnType = "V",
-    isStatic = false,
-    filters = listOf(
-        string("meta_ai_promo"),
-    )
+    parameters = listOf("Landroid/os/Bundle;"),
 )

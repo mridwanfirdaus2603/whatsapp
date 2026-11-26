@@ -47,35 +47,28 @@ Click the button below, or manually add this repo URL to Morphe Manager:
 
 ## ⚙️ Configuration
 
-Patch options are configured in **Morphe Manager** before patching:
+Each patch can be enabled or disabled in **Morphe Manager** before patching.
+When **Patch Settings** is applied, you can also toggle supported features at runtime inside WhatsApp (**Pengaturan > Pengaturan Patch**):
 
-| Option | Default | Description |
-|---|---|---|
-| Hide promotional elements | ✅ Enabled | Reduces promotional/advertising UI elements |
-| Hide Meta AI | ✅ Enabled | Hides Meta AI interface entry points |
-| Patch Settings | ✅ Enabled | Adds "Pengaturan Patch" to WhatsApp Settings |
-
-> **Note:** Configuration changes require repatching through Morphe Manager. 
-> Runtime toggle switches are not supported by the Morphe patch architecture.
+- **Sembunyikan Elemen Promosi** — Persisted via `SharedPreferences` (controls promotional AB-Props & WAMO ad verification; restart WhatsApp to apply all changes).
+- **Sembunyikan Meta AI** — Persisted via `SharedPreferences` (controls Meta AI AB-Props & HomeActivity UI cleanup; restart WhatsApp to apply all changes).
 
 ## 🔧 Patch Settings Menu
 
-When the Patch Settings patch is applied, a new "**Pengaturan Patch**" entry appears 
-in WhatsApp's Settings screen. This menu shows:
+When the Patch Settings patch is applied, a new "**Pengaturan Patch**" entry appears
+in WhatsApp's Settings screen between **Bahasa Aplikasi** and **Bantuan dan masukan**. This menu shows:
 
-- **Pembersihan Iklan** — Current promotional cleanup status.
-- **Meta AI** — Current Meta AI cleanup status.
-- **Informasi Patch** — Patch version, WhatsApp version, compatibility status.
-
-The settings display is informational and shows the current compiled configuration.
+- **Pembersihan Iklan** — Runtime switch for promotional UI cleanup.
+- **Meta AI** — Runtime switch for Meta AI UI cleanup.
+- **Informasi Patch** — Patch version, WhatsApp version, compatibility status, and supported features.
 
 ## ⚠️ Known Limitations
 
-- **Compile-time configuration only.** Settings cannot be toggled at runtime. Changes require repatching.
-- **Fingerprint-based detection.** Patches rely on fingerprinting methods by string constants and resource IDs. Untested WhatsApp versions may not match.
+- **Restart required for AB-Props.** Some WhatsApp feature flags are cached at startup; toggling switches in **Pengaturan Patch** saves immediately, and restarting WhatsApp applies all flag changes.
+- **Fingerprint-based detection.** Patches rely on fingerprinting WhatsApp's AB-Prop resolvers (`Unknown BooleanField`, `Unknown IntField`), `is_wfal_paused`, `HomeActivity`, and `Settings` / `SettingsTabActivity`. Untested WhatsApp versions may differ.
 - **No complete ad removal guarantee.** Only identifiable promotional elements are targeted.
 - **UI hiding only for Meta AI.** Backend services and infrastructure are not modified.
-- **NOT RUNTIME VERIFIED** unless explicitly tested on a device with the target WhatsApp version.
+- **NOT RUNTIME VERIFIED** on device until tested with the compiled `.mpp` bundle.
 
 ## 🛠️ Building
 

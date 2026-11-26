@@ -1,27 +1,20 @@
 package app.whatsapp.patches.metaai
 
+import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.patch.patch
-import app.morphe.patcher.util.returnEarly
 import app.whatsapp.patches.shared.Constants.WHATSAPP_COMPATIBILITY
+import app.whatsapp.patches.shared.propsHookPatch
+
+private const val EXTENSION_CLASS = "Lapp/whatsapp/extension/PatchSettingsExtension;"
 
 /**
  * Meta AI UI Cleanup patch.
  *
- * Hides supported Meta AI-related interface entry points in WhatsApp.
- * Only modifies verified UI components. Does not disable backend
- * infrastructure, authentication, or Meta AI services.
+ * Hides supported Meta AI-related interface entry points via:
+ * 1. Verified Meta AI AB-Props overrides (controlled at runtime via SharedPreferences).
+ * 2. Presentation-layer cleanup in HomeActivity (hiding Meta AI FAB and cleaning search bar hint).
  *
- * Preserves:
- * - Normal WhatsApp search functionality.
- * - Personal and group chats.
- * - Message sending and receiving.
- * - Contact and navigation functionality.
- * - Notifications and account features.
- *
- * Limitations:
- * - Only hides UI entry points identifiable via fingerprints.
- * - Does not disable Meta AI backend services.
- * - Fingerprints may not resolve on untested WhatsApp versions.
+ * Preserves normal WhatsApp search, personal/group chats, and all messaging features.
  */
 @Suppress("unused")
 val metaAICleanupPatch = patch(
@@ -31,25 +24,26 @@ val metaAICleanupPatch = patch(
 ) {
     compatibleWith(WHATSAPP_COMPATIBILITY)
 
+    dependsOn(propsHookPatch)
+
+    extendWith("extensions/extension.mpe")
+
     execute {
-        // Attempt to find and disable Meta AI UI setup methods.
-        // Each fingerprint targets a specific Meta AI interface element.
-        // Using OrNull variants for graceful handling when fingerprints
-        // cannot match on a given WhatsApp version.
-
-        // Disable Meta AI button/entry point setup.
-        MetaAIButtonFingerprint.methodOrNull?.let { method ->
-            method.returnEarly()
+        val hooked = HomeActivityOnResumeFingerprint.methodOrNull?.also { method ->
+            method.addInstructions(
+                0,
+                "invoke-static/range { p0 .. p0 }, $EXTENSION_CLASS->onHomeActivityResume(Landroid/app/Activity;)V"
+            )
         }
 
-        // Disable Meta AI shortcut component creation.
-        MetaAIShortcutFingerprint.methodOrNull?.let { method ->
-            method.returnEarly()
-        }
-
-        // Disable Meta AI promotional element display.
-        MetaAIPromotionFingerprint.methodOrNull?.let { method ->
-            method.returnEarly()
+        if (hooked == null) {
+            HomeActivityOnCreateFingerprint.methodOrNull?.let { method ->
+                val insertIdx = method.implementation!!.instructions.size - 1
+                method.addInstructions(
+                    insertIdx,
+                    "invoke-static/range { p0 .. p0 }, $EXTENSION_CLASS->onHomeActivityResume(Landroid/app/Activity;)V"
+                )
+            }
         }
     }
 }

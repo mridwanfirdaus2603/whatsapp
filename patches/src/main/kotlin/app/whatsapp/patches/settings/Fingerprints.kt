@@ -1,46 +1,38 @@
 package app.whatsapp.patches.settings
 
 import app.morphe.patcher.Fingerprint
-import app.morphe.patcher.methodCall
-import app.morphe.patcher.string
 
 /**
- * Fingerprints for locating WhatsApp's Settings infrastructure.
+ * Fingerprints for locating WhatsApp's main Settings Activity.
  *
- * These fingerprints identify the settings activity/fragment where the
- * "Pengaturan Patch" entry will be inserted. WhatsApp uses a preference-based
- * settings UI, and these fingerprints target the preference setup methods.
+ * WhatsApp uses custom Settings activities (Settings / SettingsTabActivity)
+ * rather than AndroidX PreferenceFragmentCompat.
  */
 
-/**
- * Matches the method in WhatsApp's settings fragment that sets up
- * the preference screen. This is where we inject the new
- * "Pengaturan Patch" preference entry.
- *
- * We look for the settings preferences XML resource to locate
- * the method that inflates the settings screen.
- */
-object SettingsFragmentFingerprint : Fingerprint(
+object SettingsTabOnResumeFingerprint : Fingerprint(
+    definingClass = "/SettingsTabActivity;",
+    name = "onResume",
     returnType = "V",
-    isStatic = false,
-    filters = listOf(
-        // WhatsApp settings typically reference a preferences resource.
-        // The addPreferencesFromResource or setPreferencesFromResource call
-        // loads the main settings XML.
-        methodCall(
-            name = "addPreferencesFromResource",
-        ),
-    )
+    parameters = emptyList(),
 )
 
-/**
- * Alternative fingerprint that searches for the settings fragment
- * using string constants commonly found in WhatsApp settings code.
- */
-object SettingsPreferenceFingerprint : Fingerprint(
+object SettingsTabOnCreateFingerprint : Fingerprint(
+    definingClass = "/SettingsTabActivity;",
+    name = "onCreate",
     returnType = "V",
-    isStatic = false,
-    filters = listOf(
-        string("pref_screen"),
-    )
+    parameters = listOf("Landroid/os/Bundle;"),
+)
+
+object SettingsOnResumeFingerprint : Fingerprint(
+    definingClass = "/Settings;",
+    name = "onResume",
+    returnType = "V",
+    parameters = emptyList(),
+)
+
+object SettingsOnCreateFingerprint : Fingerprint(
+    definingClass = "/Settings;",
+    name = "onCreate",
+    returnType = "V",
+    parameters = listOf("Landroid/os/Bundle;"),
 )
