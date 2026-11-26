@@ -34,6 +34,11 @@ val promotionalCleanupPatch = patch(
         AdVerifyFingerprint.methodOrNull?.let { method ->
             val returnType = method.returnType
             if (method.parameters.size == 1 && returnType.startsWith("L") && returnType.endsWith(";")) {
+                val hasPausedField = runCatching {
+                    classDefBy(returnType).fields.any { it.name == "PAUSED" && it.type == returnType }
+                }.getOrDefault(false)
+                if (!hasPausedField) return@let
+
                 val provider = runCatching { method.getFreeRegisterProvider(0, 2) }.getOrNull()
                 val condReg = runCatching { provider?.getFreeRegister4Bit() }.getOrNull()
                 val enumReg = runCatching { provider?.getFreeRegister4Bit() }.getOrNull()
