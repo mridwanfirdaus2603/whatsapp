@@ -49,9 +49,11 @@ public class PatchSettingsExtension {
     private static final String PREFS_NAME = "whatsapp_clean_experience_prefs";
     private static final String KEY_HIDE_PROMOTIONAL = "hide_promotional";
     private static final String KEY_HIDE_META_AI = "hide_meta_ai";
+    private static final String KEY_STATUS_DOWNLOADER = "status_downloader";
+    private static final String KEY_MESSAGE_ARCHIVE = "message_archive";
     private static final String SETTINGS_ROW_TAG = "morphe_patch_settings_entry";
 
-    private static final String PATCH_VERSION = "1.0.0";
+    private static final String PATCH_VERSION = "1.1.0";
     private static final String PROJECT_NAME = "WhatsApp Clean Experience";
     private static final String PROJECT_DESC = "Kustomisasi antarmuka WhatsApp melalui Morphe patches.";
 
@@ -110,6 +112,30 @@ public class PatchSettingsExtension {
     public static boolean isHideMetaAIEnabled() {
         SharedPreferences prefs = getPrefs(null);
         return prefs == null || prefs.getBoolean(KEY_HIDE_META_AI, true);
+    }
+
+    public static boolean isStatusDownloaderEnabled() {
+        SharedPreferences prefs = getPrefs(null);
+        return prefs == null || prefs.getBoolean(KEY_STATUS_DOWNLOADER, true);
+    }
+
+    public static boolean isMessageArchiveEnabled() {
+        SharedPreferences prefs = getPrefs(null);
+        return prefs == null || prefs.getBoolean(KEY_MESSAGE_ARCHIVE, true);
+    }
+
+    public static void onStatusPlaybackResume(final Activity activity) {
+        if (activity != null) appContext = activity.getApplicationContext();
+        StatusDownloaderHelper.onStatusPlaybackResume(activity);
+    }
+
+    public static void onStatusFragmentResume(final Object fragment) {
+        StatusDownloaderHelper.onStatusFragmentResume(fragment);
+    }
+
+    public static void onConversationResume(final Activity activity) {
+        if (activity != null) appContext = activity.getApplicationContext();
+        ArchiveManager.onConversationResume(activity);
     }
 
     /**
@@ -595,7 +621,72 @@ public class PatchSettingsExtension {
 
             addDivider(activity, content, dividerColor);
 
-            // SECTION C — INFORMASI PATCH
+            // SECTION C — DOWNLOAD STATUS
+            addSectionHeader(activity, content, "DOWNLOAD STATUS", accentColor);
+            addSwitchRow(
+                    activity, content,
+                    "Download Status",
+                    "Simpan media Status yang diizinkan.",
+                    isStatusDownloaderEnabled(),
+                    primaryTextColor, secondaryTextColor,
+                    (buttonView, isChecked) -> {
+                        SharedPreferences prefs = getPrefs(activity);
+                        if (prefs != null) {
+                            prefs.edit().putBoolean(KEY_STATUS_DOWNLOADER, isChecked).apply();
+                        }
+                        Toast.makeText(activity,
+                                "Pengaturan Download Status disimpan.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+            );
+
+            addDivider(activity, content, dividerColor);
+
+            // SECTION D — VIEW ONCE (informational only; no unlock switch)
+            addSectionHeader(activity, content, "VIEW ONCE", accentColor);
+            addInfoRow(
+                    activity, content,
+                    "View Once Privacy",
+                    "Informasi dan dukungan media sesuai izin privasi.\n"
+                            + "Media Sekali Lihat (View Once) tidak dapat disimpan atau dibuka ulang melalui patch ini demi menghormati kontrol privasi pengirim.",
+                    primaryTextColor, secondaryTextColor
+            );
+
+            addDivider(activity, content, dividerColor);
+
+            // SECTION E — MESSAGE AND MEDIA ARCHIVE
+            addSectionHeader(activity, content, "MESSAGE AND MEDIA ARCHIVE", accentColor);
+            addSwitchRow(
+                    activity, content,
+                    "Keep Messages & Media",
+                    "Kelola arsip lokal pesan dan media.",
+                    isMessageArchiveEnabled(),
+                    primaryTextColor, secondaryTextColor,
+                    (buttonView, isChecked) -> {
+                        SharedPreferences prefs = getPrefs(activity);
+                        if (prefs != null) {
+                            prefs.edit().putBoolean(KEY_MESSAGE_ARCHIVE, isChecked).apply();
+                        }
+                        Toast.makeText(activity,
+                                "Pengaturan Arsip Lokal disimpan.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+            );
+
+            TextView manageArchiveBtn = new TextView(activity);
+            manageArchiveBtn.setText("Kelola Arsip Lokal →");
+            manageArchiveBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            manageArchiveBtn.setTypeface(Typeface.DEFAULT_BOLD);
+            manageArchiveBtn.setTextColor(accentColor);
+            manageArchiveBtn.setPadding(0, dpToPx(activity, 4), 0, dpToPx(activity, 12));
+            manageArchiveBtn.setOnClickListener(v ->
+                    ArchiveManager.showArchiveManagerDialog(
+                            activity, bgColor, primaryTextColor, secondaryTextColor, accentColor));
+            content.addView(manageArchiveBtn);
+
+            addDivider(activity, content, dividerColor);
+
+            // SECTION F — INFORMASI PATCH
             addSectionHeader(activity, content, "INFORMASI PATCH", accentColor);
             addInfoRow(activity, content, "Proyek", PROJECT_NAME, primaryTextColor, secondaryTextColor);
             addInfoRow(activity, content, "Deskripsi", PROJECT_DESC, primaryTextColor, secondaryTextColor);
@@ -603,7 +694,7 @@ public class PatchSettingsExtension {
             addInfoRow(activity, content, "Versi WhatsApp", getWhatsAppVersion(activity), primaryTextColor, secondaryTextColor);
             addInfoRow(activity, content, "Status kompatibilitas", getCompatibilityStatus(), primaryTextColor, secondaryTextColor);
             addInfoRow(activity, content, "Fitur yang didukung",
-                    "Pembersihan UI promosi, Pembersihan UI Meta AI, Pengaturan Patch",
+                    "Pembersihan UI promosi, Pembersihan UI Meta AI, Download Status, Keep Messages & Media, Pengaturan Patch",
                     primaryTextColor, secondaryTextColor);
 
             scroll.addView(content);

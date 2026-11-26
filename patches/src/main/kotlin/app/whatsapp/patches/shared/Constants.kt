@@ -36,7 +36,7 @@ object Constants {
     )
 
     /** Patch version identifier shown in the settings screen. */
-    const val PATCH_VERSION = "1.0.0"
+    const val PATCH_VERSION = "1.1.0"
 
     /** Project display name. */
     const val PROJECT_NAME = "WhatsApp Clean Experience"
