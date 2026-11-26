@@ -77,18 +77,20 @@ val propsHookPatch = patch {
                 )
             } else {
                 val firstFree = method.implementation!!.registerCount
-                val (cloned, _) = method.addFreeRegisters(1)
-                cloned.addInstructions(
-                    0,
-                    """
-                        invoke-static/range { $propReg .. $propReg }, $EXTENSION_CLASS->overrideBooleanProp(I)I
-                        move-result v$firstFree
-                        if-ltz v$firstFree, :morphe_orig_bool
-                        return v$firstFree
-                        :morphe_orig_bool
-                        nop
-                    """
-                )
+                if (firstFree <= 15) {
+                    val (cloned, _) = method.addFreeRegisters(1)
+                    cloned.addInstructions(
+                        0,
+                        """
+                            invoke-static/range { $propReg .. $propReg }, $EXTENSION_CLASS->overrideBooleanProp(I)I
+                            move-result v$firstFree
+                            if-ltz v$firstFree, :morphe_orig_bool
+                            return v$firstFree
+                            :morphe_orig_bool
+                            nop
+                        """
+                    )
+                }
             }
         }
 
