@@ -23,7 +23,7 @@ Click the button below, or manually add this repo URL to Morphe Manager:
 ## 🩹 Patches
 
 <!-- PATCHES_START -->
-> **[v1.0.0-dev.1](https://github.com/mridwanfirdaus2603/whatsapp/releases/tag/v1.0.0-dev.1)**&nbsp;&nbsp;&middot;&nbsp;&nbsp;`dev`&nbsp;&nbsp;&middot;&nbsp;&nbsp;**3 patches** across **1 app**&nbsp;&nbsp;&middot;&nbsp;&nbsp;[Full details](PATCHES.md)
+> **[v1.0.0-dev.2](https://github.com/mridwanfirdaus2603/whatsapp/releases/tag/v1.0.0-dev.2)**&nbsp;&nbsp;&middot;&nbsp;&nbsp;`dev`&nbsp;&nbsp;&middot;&nbsp;&nbsp;**3 patches** across **1 app**&nbsp;&nbsp;&middot;&nbsp;&nbsp;[Full details](PATCHES.md)
 
 | # | App | Patches | Version | Package |
 |---|---|---|---|---|

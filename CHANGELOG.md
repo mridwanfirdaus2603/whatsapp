@@ -1,3 +1,13 @@
+## [1.0.0-dev.2](https://github.com/mridwanfirdaus2603/whatsapp/compare/v1.0.0-dev.1...v1.0.0-dev.2) (2026-11-26)
+
+### ✨ New Features
+
+* add AB-Props runtime hooks, HomeActivity Meta AI cleanup, and native Settings row injection ([4b93f10](https://github.com/mridwanfirdaus2603/whatsapp/commit/4b93f106c199a36ecbdda72bb9360abeec277ade))
+
+### 🐛 Bug Fixes
+
+* capture effectively final siblingRow for click listener lambda ([425462e](https://github.com/mridwanfirdaus2603/whatsapp/commit/425462ee5f8e1740c2a809cfa259abb9c5aa40b2))
+
 ## 1.0.0-dev.1 (2026-11-25)
 
 ### ✨ New Features
