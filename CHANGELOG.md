@@ -1,3 +1,9 @@
+## [1.0.0-dev.3](https://github.com/mridwanfirdaus2603/whatsapp/compare/v1.0.0-dev.2...v1.0.0-dev.3) (2026-11-26)
+
+### 🐛 Bug Fixes
+
+* add icon margins and alignment to match native WhatsApp settings rows ([fb28f85](https://github.com/mridwanfirdaus2603/whatsapp/commit/fb28f853da168bde68dbf3882a0c7cf6b4dcd610))
+
 ## [1.0.0-dev.2](https://github.com/mridwanfirdaus2603/whatsapp/compare/v1.0.0-dev.1...v1.0.0-dev.2) (2026-11-26)
 
 ### ✨ New Features
