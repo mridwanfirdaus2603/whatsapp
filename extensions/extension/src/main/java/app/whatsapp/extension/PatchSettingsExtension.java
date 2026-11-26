@@ -253,9 +253,10 @@ public class PatchSettingsExtension {
             int anchorIndex = parentList.indexOfChild(row);
             int insertIndex = insertBeforeAnchor ? anchorIndex : anchorIndex + 1;
 
-            View patchRow = buildMatchingSettingsRow(activity, row);
+            final View siblingRow = row;
+            View patchRow = buildMatchingSettingsRow(activity, siblingRow);
             patchRow.setTag(SETTINGS_ROW_TAG);
-            patchRow.setOnClickListener(v -> showPatchSettingsScreen(activity, row));
+            patchRow.setOnClickListener(v -> showPatchSettingsScreen(activity, siblingRow));
 
             parentList.addView(patchRow, insertIndex);
         } catch (Throwable ignored) {
