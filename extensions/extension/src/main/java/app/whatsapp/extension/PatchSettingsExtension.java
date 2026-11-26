@@ -292,17 +292,28 @@ public class PatchSettingsExtension {
         TextView siblingTitle = siblingTexts[0];
         TextView siblingSubtitle = siblingTexts[1];
 
+        // Clone the sibling row's exact structure rather than building from scratch.
+        // WhatsApp settings rows use complex custom ViewGroups; we replicate the
+        // measurable geometry of the sibling so our row is pixel-aligned.
+
         LinearLayout row = new LinearLayout(activity);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setClickable(true);
         row.setFocusable(true);
 
+        // Copy layout params from sibling
         if (siblingRow.getLayoutParams() != null) {
-            row.setLayoutParams(new ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams slp = siblingRow.getLayoutParams();
+            ViewGroup.MarginLayoutParams rowParams = new ViewGroup.MarginLayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    siblingRow.getLayoutParams().height
-            ));
+                    slp.height > 0 ? slp.height : ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            if (slp instanceof ViewGroup.MarginLayoutParams) {
+                ViewGroup.MarginLayoutParams smp = (ViewGroup.MarginLayoutParams) slp;
+                rowParams.setMargins(smp.leftMargin, smp.topMargin, smp.rightMargin, smp.bottomMargin);
+            }
+            row.setLayoutParams(rowParams);
         } else {
             row.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -310,6 +321,7 @@ public class PatchSettingsExtension {
             ));
         }
 
+        // Copy exact padding from sibling
         row.setPadding(
                 siblingRow.getPaddingLeft(),
                 siblingRow.getPaddingTop(),
@@ -328,35 +340,84 @@ public class PatchSettingsExtension {
             row.setBackgroundResource(outValue.resourceId);
         }
 
-        // Icon
-        ImageView iconView = new ImageView(activity);
-        int iconSize = dpToPx(activity, 24);
-        LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(iconSize, iconSize);
-        if (siblingIcon != null && siblingIcon.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-            ViewGroup.MarginLayoutParams smp = (ViewGroup.MarginLayoutParams) siblingIcon.getLayoutParams();
-            iconParams = new LinearLayout.LayoutParams(smp.width, smp.height);
-            iconParams.setMargins(smp.leftMargin, smp.topMargin, smp.rightMargin, smp.bottomMargin);
-            if (Build.VERSION.SDK_INT >= 17) {
-                iconParams.setMarginStart(smp.getMarginStart());
-                iconParams.setMarginEnd(smp.getMarginEnd());
+        // --- Icon ---
+        // Determine icon dimensions and margins from the sibling's ImageView.
+        // If the sibling icon can't be found, use hardcoded values that match
+        // WhatsApp's native settings rows (24dp icon, ~16dp start margin, ~24dp end margin).
+        int iconSize;
+        int iconMarginStart;
+        int iconMarginEnd;
+        int iconMarginTop = 0;
+        int iconMarginBottom = 0;
+
+        if (siblingIcon != null && siblingIcon.getLayoutParams() != null) {
+            ViewGroup.LayoutParams ilp = siblingIcon.getLayoutParams();
+            iconSize = ilp.width > 0 ? ilp.width : dpToPx(activity, 24);
+            if (ilp instanceof ViewGroup.MarginLayoutParams) {
+                ViewGroup.MarginLayoutParams imp = (ViewGroup.MarginLayoutParams) ilp;
+                iconMarginStart = Build.VERSION.SDK_INT >= 17 ? imp.getMarginStart() : imp.leftMargin;
+                iconMarginEnd = Build.VERSION.SDK_INT >= 17 ? imp.getMarginEnd() : imp.rightMargin;
+                iconMarginTop = imp.topMargin;
+                iconMarginBottom = imp.bottomMargin;
+                // If margins are 0, the padding might be on a wrapper; fall back to sensible defaults
+                if (iconMarginStart == 0 && iconMarginEnd == 0) {
+                    // Measure distance: the icon's left edge relative to the row
+                    int[] iconLoc = new int[2];
+                    int[] rowLoc = new int[2];
+                    siblingIcon.getLocationInWindow(iconLoc);
+                    siblingRow.getLocationInWindow(rowLoc);
+                    int measuredStart = iconLoc[0] - rowLoc[0];
+                    if (measuredStart > 0) {
+                        iconMarginStart = measuredStart;
+                    } else {
+                        iconMarginStart = dpToPx(activity, 20);
+                    }
+                    // Measure gap between icon right edge and sibling title left edge
+                    if (siblingTitle != null) {
+                        int[] titleLoc = new int[2];
+                        siblingTitle.getLocationInWindow(titleLoc);
+                        int measuredEnd = titleLoc[0] - (iconLoc[0] + siblingIcon.getWidth());
+                        if (measuredEnd > 0) {
+                            iconMarginEnd = measuredEnd;
+                        } else {
+                            iconMarginEnd = dpToPx(activity, 24);
+                        }
+                    } else {
+                        iconMarginEnd = dpToPx(activity, 24);
+                    }
+                }
+            } else {
+                iconMarginStart = dpToPx(activity, 20);
+                iconMarginEnd = dpToPx(activity, 24);
             }
         } else {
-            int marginEnd = dpToPx(activity, 24);
-            if (Build.VERSION.SDK_INT >= 17) {
-                iconParams.setMarginEnd(marginEnd);
-            } else {
-                iconParams.rightMargin = marginEnd;
-            }
+            // No sibling icon found — use hardcoded defaults matching WhatsApp native layout
+            iconSize = dpToPx(activity, 24);
+            iconMarginStart = dpToPx(activity, 20);
+            iconMarginEnd = dpToPx(activity, 24);
         }
+
+        ImageView iconView = new ImageView(activity);
+        LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(iconSize, iconSize);
+        if (Build.VERSION.SDK_INT >= 17) {
+            iconParams.setMarginStart(iconMarginStart);
+            iconParams.setMarginEnd(iconMarginEnd);
+        } else {
+            iconParams.leftMargin = iconMarginStart;
+            iconParams.rightMargin = iconMarginEnd;
+        }
+        iconParams.topMargin = iconMarginTop;
+        iconParams.bottomMargin = iconMarginBottom;
         iconView.setLayoutParams(iconParams);
 
         int iconColor = siblingSubtitle != null ? siblingSubtitle.getCurrentTextColor() : 0xFF8696A0;
         iconView.setImageDrawable(new SlidersIconDrawable(iconColor));
         row.addView(iconView);
 
-        // Text column
+        // --- Text column ---
         LinearLayout textCol = new LinearLayout(activity);
         textCol.setOrientation(LinearLayout.VERTICAL);
+        textCol.setGravity(Gravity.CENTER_VERTICAL);
         textCol.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
         TextView titleView = new TextView(activity);
@@ -365,6 +426,7 @@ public class PatchSettingsExtension {
             titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, siblingTitle.getTextSize());
             titleView.setTypeface(siblingTitle.getTypeface());
             titleView.setTextColor(siblingTitle.getTextColors());
+            titleView.setPadding(siblingTitle.getPaddingLeft(), 0, siblingTitle.getPaddingRight(), 0);
         } else {
             titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         }
@@ -376,6 +438,7 @@ public class PatchSettingsExtension {
             subtitleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, siblingSubtitle.getTextSize());
             subtitleView.setTypeface(siblingSubtitle.getTypeface());
             subtitleView.setTextColor(siblingSubtitle.getTextColors());
+            subtitleView.setPadding(siblingSubtitle.getPaddingLeft(), 0, siblingSubtitle.getPaddingRight(), 0);
         } else {
             subtitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         }
@@ -698,14 +761,19 @@ public class PatchSettingsExtension {
                 TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
-    /** Monochrome 3-bar tune/sliders icon matching WhatsApp settings icons. */
+    /** Monochrome 3-bar tune/sliders icon matching WhatsApp outlined settings icons. */
     private static class SlidersIconDrawable extends Drawable {
-        private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private final Paint linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private final Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         SlidersIconDrawable(int color) {
-            paint.setColor(color);
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeCap(Paint.Cap.ROUND);
+            linePaint.setColor(color);
+            linePaint.setStyle(Paint.Style.STROKE);
+            linePaint.setStrokeCap(Paint.Cap.ROUND);
+
+            circlePaint.setColor(color);
+            circlePaint.setStyle(Paint.Style.STROKE);
+            circlePaint.setStrokeCap(Paint.Cap.ROUND);
         }
 
         @Override
@@ -713,31 +781,45 @@ public class PatchSettingsExtension {
             android.graphics.Rect b = getBounds();
             float w = b.width();
             float h = b.height();
-            float stroke = Math.max(2f, w * 0.08f);
-            paint.setStrokeWidth(stroke);
+            if (w <= 0 || h <= 0) return;
 
-            float left = b.left + w * 0.15f;
-            float right = b.left + w * 0.85f;
-            float[] ys = {b.top + h * 0.27f, b.top + h * 0.50f, b.top + h * 0.73f};
-            float[] xs = {b.left + w * 0.65f, b.left + w * 0.35f, b.left + w * 0.60f};
-            float r = w * 0.09f;
+            float stroke = Math.max(1.5f, w * 0.065f);
+            linePaint.setStrokeWidth(stroke);
+            circlePaint.setStrokeWidth(stroke);
+
+            // Inset slightly so strokes don't clip at bounds
+            float inset = stroke;
+            float left = b.left + inset;
+            float right = b.right - inset;
+            float top = b.top + inset;
+            float bottom = b.bottom - inset;
+            float innerW = right - left;
+            float innerH = bottom - top;
+
+            // Three horizontal lines with slider dots at different positions
+            float[] ys = {top + innerH * 0.22f, top + innerH * 0.50f, top + innerH * 0.78f};
+            float[] xs = {left + innerW * 0.65f, left + innerW * 0.32f, left + innerW * 0.55f};
+            float r = innerW * 0.10f;
 
             for (int i = 0; i < 3; i++) {
-                paint.setStyle(Paint.Style.STROKE);
-                canvas.drawLine(left, ys[i], xs[i] - r, ys[i], paint);
-                canvas.drawLine(xs[i] + r, ys[i], right, ys[i], paint);
-                canvas.drawCircle(xs[i], ys[i], r, paint);
+                // Line segments on each side of the knob
+                canvas.drawLine(left, ys[i], xs[i] - r - stroke * 0.5f, ys[i], linePaint);
+                canvas.drawLine(xs[i] + r + stroke * 0.5f, ys[i], right, ys[i], linePaint);
+                // Knob circle (outlined, matching WhatsApp's outlined icon style)
+                canvas.drawCircle(xs[i], ys[i], r, circlePaint);
             }
         }
 
         @Override
         public void setAlpha(int alpha) {
-            paint.setAlpha(alpha);
+            linePaint.setAlpha(alpha);
+            circlePaint.setAlpha(alpha);
         }
 
         @Override
         public void setColorFilter(ColorFilter colorFilter) {
-            paint.setColorFilter(colorFilter);
+            linePaint.setColorFilter(colorFilter);
+            circlePaint.setColorFilter(colorFilter);
         }
 
         @Override
