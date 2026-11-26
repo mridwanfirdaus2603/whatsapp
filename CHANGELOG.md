@@ -1,3 +1,9 @@
+## [1.0.0-dev.4](https://github.com/mridwanfirdaus2603/whatsapp/compare/v1.0.0-dev.3...v1.0.0-dev.4) (2026-11-26)
+
+### ✨ New Features
+
+* add Download Status, Keep Messages & Media Archive, and View Once Privacy info ([6a36607](https://github.com/mridwanfirdaus2603/whatsapp/commit/6a36607508da5b8c47b54d1c06630c406ca152f9))
+
 ## [1.0.0-dev.3](https://github.com/mridwanfirdaus2603/whatsapp/compare/v1.0.0-dev.2...v1.0.0-dev.3) (2026-11-26)
 
 ### 🐛 Bug Fixes
