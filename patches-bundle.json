@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-26T09:29:27",
-  "description": "## [1.0.0-dev.3](https://github.com/mridwanfirdaus2603/whatsapp/compare/v1.0.0-dev.2...v1.0.0-dev.3) (2026-11-26)\n\n### 🐛 Bug Fixes\n\n* add icon margins and alignment to match native WhatsApp settings rows ([fb28f85](https://github.com/mridwanfirdaus2603/whatsapp/commit/fb28f853da168bde68dbf3882a0c7cf6b4dcd610))",
-  "download_url": "https://github.com/mridwanfirdaus2603/whatsapp/releases/download/v1.0.0-dev.3/patches-1.0.0-dev.3.mpp",
+  "created_at": "2026-11-26T14:14:38",
+  "description": "## [1.0.0-dev.4](https://github.com/mridwanfirdaus2603/whatsapp/compare/v1.0.0-dev.3...v1.0.0-dev.4) (2026-11-26)\n\n### ✨ New Features\n\n* add Download Status, Keep Messages & Media Archive, and View Once Privacy info ([6a36607](https://github.com/mridwanfirdaus2603/whatsapp/commit/6a36607508da5b8c47b54d1c06630c406ca152f9))",
+  "download_url": "https://github.com/mridwanfirdaus2603/whatsapp/releases/download/v1.0.0-dev.4/patches-1.0.0-dev.4.mpp",
   "signature_download_url": "",
-  "version": "1.0.0-dev.3"
+  "version": "1.0.0-dev.4"
 }
