@@ -1,5 +1,6 @@
 /*
  * Copyright 2025 Morphe.
+ * Modified for WhatsApp Clean Experience patches.
  * https://github.com/MorpheApp/morphe-patches-template
  */
 
